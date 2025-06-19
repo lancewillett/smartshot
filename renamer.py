@@ -21,16 +21,11 @@ def analyze_image(image_path):
 
     client = OpenAI()
 
-    with Image.open(image_path) as img:
-        IMG_RES = 512
-        W, H = img.size
-        img = img.resize((IMG_RES, int(IMG_RES * H / W)))
-        buffer = BytesIO()
-        img.save(buffer, format="PNG")
-        img_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
+    with open(image_path, "rb") as f:
+        img_base64 = base64.b64encode(f.read()).decode("utf-8")
 
     response = client.chat.completions.create(
-        model="gpt-4-vision-preview",
+        model="gpt-4o",
         messages=[
             {
                 "role": "user",
@@ -41,7 +36,9 @@ def analyze_image(image_path):
                     },
                     {
                         "type": "image_url",
-                        "image_url": f"data:image/png;base64,{img_base64}",
+                        "image_url": {
+                            "url": f"data:image/png;base64,{img_base64}"
+                        }
                     },
                     {
                         "type": "text",
