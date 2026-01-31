@@ -1,14 +1,14 @@
 # SmartShot
 
 ## Introduction
-SmartShot automates the task of organizing and renaming screenshots in a specified folder on macOS. It uses the built-in Automater app to auto-detect when new screenshots are taken and runs a script to rename them.
+SmartShot automates the task of organizing and renaming screenshots in a specified folder on macOS. It uses the built-in Automator app to auto-detect when new screenshots are taken and runs a script to rename them.
 
 ## Setup Instructions
 
 ### API Key Configuration
 1. **Set OpenAI API Key as an Environment Variable:**
    - Open your Terminal.
-   - Edit your `.zshrc` file by typing `nano ~/.zshrc`.
+   - Edit your `.zshrc` file by typing `nano ~/.zshrc`. (Or `.bashrc` or similar, depending on your shell.)
    - Add the following line at the end of the file:
   
      ```sh
@@ -50,5 +50,7 @@ SmartShot automates the task of organizing and renaming screenshots in a specifi
 
 ## Troubleshooting
 - **API Key Access:** If the script cannot access the API key, verify the `.zshrc` file's configuration and the environment variable export.
-- **GPT4 Rate Limit** With GPT4V preview, you only 100 requests per day.
+- **Rate Limits:** Check your OpenAI account for current rate limits on the model being used.
 - **Automator Configuration:** Confirm the correct paths in Automator and ensure the Python script has the necessary execution permissions.
+- **System Access:** If the folder automation doesn't work, go to `System Settings > Privacy & Security` and add Full Disk Access for Automator.app.
+- **Debug the Dispatcher:** Find this in Finder: `/System/Library/CoreServices/Applications/Folder Actions Setup.app` and launch it. Ensure: 1) the folder you're testing is listed and 2) the action is checked (enabled).

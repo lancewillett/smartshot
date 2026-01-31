@@ -1,9 +1,7 @@
 import os
+import base64
 
 from openai import OpenAI
-from PIL import Image
-from io import BytesIO
-import base64
 
 
 def find_latest_screenshot(directory):
@@ -17,35 +15,32 @@ def find_latest_screenshot(directory):
 
 
 def analyze_image(image_path):
-    """Analyze the image using GPT-4 API and return the description."""
+    """Analyze the image using GPT-4o API and return the description."""
 
     client = OpenAI()
 
-    with Image.open(image_path) as img:
-        IMG_RES = 512
-        W, H = img.size
-        img = img.resize((IMG_RES, int(IMG_RES * H / W)))
-        buffer = BytesIO()
-        img.save(buffer, format="PNG")
-        img_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
+    with open(image_path, "rb") as f:
+        img_base64 = base64.b64encode(f.read()).decode("utf-8")
 
     response = client.chat.completions.create(
-        model="gpt-4-vision-preview",
+        model="gpt-4o",
         messages=[
             {
                 "role": "user",
                 "content": [
                     {
                         "type": "text",
-                        "text": "This is a screenshot of something on my screen",
+                        "text": "This is a screenshot of something on my screen:",
                     },
                     {
                         "type": "image_url",
-                        "image_url": f"data:image/png;base64,{img_base64}",
+                        "image_url": {
+                            "url": f"data:image/png;base64,{img_base64}"
+                        }
                     },
                     {
                         "type": "text",
-                        "text": "Provide me a concise and descriptive file name for this image. Do not add any file extension. Be as descriptive as possible and keep it shorter than 6 words.",
+                        "text": "Provide me a concise and descriptive file name for this image. Do not add any file extension. Use spaces between words. Use sentence case. Be as descriptive as possible and keep it shorter than 10 words.",
                     },
                 ],
             }
@@ -59,7 +54,7 @@ def analyze_image(image_path):
 def rename_image(image_path, description):
     """Rename the image file based on the description."""
     directory, filename = os.path.split(image_path)
-    new_filename = "_".join(description.split()) + ".png"
+    new_filename = " ".join(description.split()) + ".png"
     new_path = os.path.join(directory, new_filename)
     os.rename(image_path, new_path)
     return new_path
