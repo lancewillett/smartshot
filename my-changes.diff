@@ -1,0 +1,82 @@
+diff --git a/processed.log b/processed.log
+old mode 100644
+new mode 100755
+index 8b13789..a137062
+--- a/processed.log
++++ b/processed.log
+@@ -1 +1,10 @@
+-
++/Users/lance/Downloads/Workflow_File_Search_Guide.png
++/Users/lance/Downloads/WooCommerce_Core_Testing_Overview.png
++/Users/lance/Downloads/username-tooltip-highlight-on-screen.png
++/Users/lance/Library/CloudStorage/Dropbox/@ Inbox/macos-system-preferences-list-view.png
++/Users/lance/Library/CloudStorage/Dropbox/@ Inbox/three-simple-rules-handwritten-note.png
++/Users/lance/Documents/GPT Screenshots/php-theme-demo-special-cases-code-screenshot.png
++/Users/lance/Documents/GPT Screenshots/priority-selection-dropdown-create-issue.png
++/Users/lance/Documents/GPT Screenshots/Create_new_Ask_dropdown_for_theme_issues.png
++/Users/lance/Documents/GPT Screenshots/Jetpack P2 dashboard with support links.png
++/Users/lance/Library/CloudStorage/Dropbox/@ Inbox/GPT Screenshot Renamed/Feature request bug report form screenshot.png
+diff --git a/renamer.py b/renamer.py
+index bec98d3..a7b4d9d 100755
+--- a/renamer.py
++++ b/renamer.py
+@@ -21,31 +21,28 @@ def analyze_image(image_path):
+ 
+     client = OpenAI()
+ 
+-    with Image.open(image_path) as img:
+-        IMG_RES = 512
+-        W, H = img.size
+-        img = img.resize((IMG_RES, int(IMG_RES * H / W)))
+-        buffer = BytesIO()
+-        img.save(buffer, format="PNG")
+-        img_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
++    with open(image_path, "rb") as f:
++        img_base64 = base64.b64encode(f.read()).decode("utf-8")
+ 
+     response = client.chat.completions.create(
+-        model="gpt-4-vision-preview",
++        model="gpt-4o",
+         messages=[
+             {
+                 "role": "user",
+                 "content": [
+                     {
+                         "type": "text",
+-                        "text": "This is a screenshot of something on my screen",
++                        "text": "This is a screenshot of something on my screen:",
+                     },
+                     {
+                         "type": "image_url",
+-                        "image_url": f"data:image/png;base64,{img_base64}",
++                        "image_url": {
++                            "url": f"data:image/png;base64,{img_base64}"
++                        }
+                     },
+                     {
+                         "type": "text",
+-                        "text": "Provide me a concise and descriptive file name for this image. Do not add any file extension. Be as descriptive as possible and keep it shorter than 6 words.",
++                        "text": "Provide me a concise and descriptive file name for this image. Do not add any file extension. No underscores, add spaces between words. Use sentence case. Be as descriptive as possible and keep it shorter than 10 words.",
+                     },
+                 ],
+             }
+@@ -59,7 +56,7 @@ def analyze_image(image_path):
+ def rename_image(image_path, description):
+     """Rename the image file based on the description."""
+     directory, filename = os.path.split(image_path)
+-    new_filename = "_".join(description.split()) + ".png"
++    new_filename = " ".join(description.split()) + ".png"
+     new_path = os.path.join(directory, new_filename)
+     os.rename(image_path, new_path)
+     return new_path
+@@ -83,8 +80,8 @@ def mark_as_processed(filename, processed_log):
+ def main():
+     # Modify these paths to your own
+     DIRS = [
+-        "/Users/username/path_to_screenshots",
+-        "/Users/hudzah/some_folder/screenshot-renamer/processed.log",
++        "/Users/lance/Library/CloudStorage/Dropbox/@ Inbox/GPT Screenshot Renamed/",
++        "/Users/lance/Source/smartshot-lance/processed.log",
+     ]
+ 
+     screenshots_dir = DIRS[0]

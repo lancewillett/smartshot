@@ -1,0 +1,19 @@
+I fixed the image processing code, with help from ChatGPT
+
+- simpler base64 encoding
+- correct API JSON format
+
+I changed the model to gpt-4o; the vision preview model is deprecated June 18, 2025 (yesterday!)
+
+Adapted the prompt language:
+
+> Provide me a concise and descriptive file name for this image. Do not add any file extension. No underscores, add spaces between words. Use sentence case. Be as descriptive as possible and keep it shorter than 10 words.
+
+I removed the underscores from being added to the file name.
+
+
+## Install 
+
+add to "Troubleshooting:" in README
+
+Check Folder Action Attachment: Ensure the folder action is properly attached to the folder. Right-click the folder, select "Services," and then "Folder Actions Setup" to verify.
